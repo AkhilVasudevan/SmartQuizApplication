@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--header script-->
+<link rel="stylesheet" type="text/css" href="css\script.css">
+<!-- Favicon-->
+<link rel="shortcut icon" href="images/q-icon.png">
+<!--jquery-->
+<script type="text/javascript" language="javascript" src="js/jquery.js"></script>
+<!--swal-->
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<title>Quiz</title>
+</head>
+<body onload="check()">
+<div id="container">
+	<!--header-->
+	<div class="header">
+		<!--h1>PSG College of Technology<br--><h1>Smart Quizzer</h1>
+		<h2>A Smart Innovation</h2>
+	</div>
+	<!--signup-->
+	<div class="sign">
+  <form class="animate" id="form-sign-up" method="post">
+    <div class="container">
+      <h1>Sign Up</h1>
+      <hr>
+	  <p>
+	  <label for="user"><b>User Name</b></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="text" placeholder="Enter User Name" name="user" id="user" required>
+    </p>
+    <font color ="#FF0052">
+        <span id="name_error_message" class="error_form"></span>
+      </font>
+      <p>
+	  <label for="email"><b>Email</b></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="text" placeholder="Enter Email" name="email" id="email" required>
+    </p>
+    <font color ="#FF0052">
+        <span id="email_error_message" class="error_form"></span>
+    </font>
+	  <p>
+      <label for="psw"><b>Password</b></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="password" placeholder="Enter Password" name="psw" id="psw" required>
+	  </p>
+	  <p>
+      <label for="psw-repeat"><b>Conform Password</b></label>&nbsp;&nbsp;
+      <input type="password" placeholder="Conform Password" name="psw-repeat" id="psw-repeat" required>
+    </p>
+    <font color ="#FF0052">
+        <span id="password_error_message" class="error_form"></span>
+      </font>
+      <div class="clearfix">
+        <input type="reset" class="cancelbtn" value="Cancel">
+        <input type="submit" class="btn" value="Sign Up" id="register">
+      </div>
+    </div>
+  </form>
+	</div>
+	<!--login-->
+	<div class="log">
+      <form class="animate" id="form-login"  method="post">
+        <div class="container">
+      <h1>Log In</h1>
+          <hr>
+         <p>
+        <label for="uname"><b>Email Id</b></label>&nbsp;&nbsp;
+        <input type="text" placeholder="Enter Email Id" name="uname" id="uname" required>
+       </p>
+       <p>
+          <label for="psw"><b>Password</b></label>&nbsp;&nbsp;
+          <input type="password" placeholder="Enter Password" name="pswd" id="pswd" required>
+       </p>
+        </div>
+        <div class="container">
+          <input type="submit" class="btn" value="Login" id="log">
+          <input type="reset" class="cancelbtn" value="Cancel">
+        </div>
+      </form>
+	</div>
+</div>
+</body>
+<script>
+   function check()
+   {
+    if((window.fullScreen) ||
+   (window.innerWidth == screen.width && window.innerHeight == screen.height)) {
+
+} else {
+  alert("Switch to full-screen otherwise. You can't login.");
+}
+   }
+  $(function(){
+    var name=false;
+    var email=false;
+    var password=false;
+    function check_name()
+		{
+			var letters=/^[A-Za-z ]+$/;
+			if($("#user").val().match(letters))
+			{
+				$("#name_error_message").hide();
+        name=false;
+			}
+			else
+			{
+				$("#name_error_message").html("Name should not contain numbers and special characters.");
+				$("#name_error_message").show();
+				name=true;
+			}
+		}
+    function check_email()
+		{
+			var m=/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+			if($("#email").val().match(m))
+			{
+				$("#email_error_message").hide();
+        email=false;
+			}
+			else
+			{
+				$("#email_error_message").html("Invalid mail id.");
+				$("#email_error_message").show();
+				email=true;
+			}
+		}
+    function check_password()
+		{
+			if($("#psw").val()==$("#psw-repeat").val())
+			{
+				$("#password_error_message").hide();
+        password=false;
+			}
+			else
+			{
+				$("#password_error_message").html("Password doesn't match.");
+				$("#password_error_message").show();
+				password=true;
+			}
+		}
+    $("#form-sign-up").submit(function(){
+      check_name();
+      check_email();
+      check_password();
+      if(name==false && email==false && password==false)
+      {
+        var str='&name='+$("#user").val()+'&email='+$("#email").val()+'&password='+$("#psw").val();
+        $.ajax({
+          type:'post',
+          url:'php/register.php',
+          data:str,
+          success:function(result)
+          {
+            alert(result);
+            if(result=="Registered Successfully."){
+              document.getElementById("form-sign-up").reset();
+            }
+          },
+          error:function(result)
+          {
+            alert("Registration Failure.");
+          }
+        });
+      }
+      return false;
+    });
+    $("#form-login").submit(function(){
+      var str='&email='+$("#uname").val()+'&password='+$("#pswd").val();
+      $.ajax({
+          type:'post',
+          url:'php/login.php',
+          data:str,
+          success:function(result)
+          {
+            if(result=="true"){
+              document.getElementById("form-login").reset();
+              window.location.href="./home.html";
+            }
+            else{
+              alert(result);
+            }
+          },
+          error:function(result)
+          {
+            alert("Registration Failure.");
+          }
+        });
+        return false;
+    });
+  });
+</script>
+</html>
